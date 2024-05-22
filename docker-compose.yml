@@ -2,6 +2,7 @@ version: '3.8'
 services:
   spring-boot-app:
     build: .
+    container_name: spring-boot
     restart: always
     ports:
       - "8080:8080"
@@ -9,13 +10,13 @@ services:
       - mariadb
       - redis
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb-container:3306/bridge
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/bridge
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=bridge
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   mariadb:
-    container_name: mariadb-container
+    container_name: mariadb
     image: mariadb
     restart: always
     environment:
