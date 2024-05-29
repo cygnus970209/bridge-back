@@ -1,4 +1,4 @@
-package com.project.bridge.config;
+package com.project.bridge.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
