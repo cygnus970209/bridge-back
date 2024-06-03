@@ -49,13 +49,13 @@ dependencies {
 	//jdbc
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
-	//QueryDSL
-	implementation 'javax.annotation:javax.annotation-api:1.3.2'
-	implementation group: 'com.querydsl', name: 'querydsl-core', version: '4.4.0'
-	implementation group: 'com.querydsl', name: 'querydsl-jpa', version: '4.4.0'
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+//	//QueryDSL
+//	implementation 'javax.annotation:javax.annotation-api:1.3.2'
+//	implementation group: 'com.querydsl', name: 'querydsl-core', version: '4.4.0'
+//	implementation group: 'com.querydsl', name: 'querydsl-jpa', version: '4.4.0'
+//	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
+//	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+//	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 
 	//lombok
 	compileOnly 'org.projectlombok:lombok'
@@ -78,8 +78,12 @@ dependencies {
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.batch:spring-batch-test'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+	// test용 h2 db
+	runtimeOnly 'com.h2database:h2'
+
+//	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+//	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 tasks.named('test',Test) {
