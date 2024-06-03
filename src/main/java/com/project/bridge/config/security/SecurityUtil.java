@@ -1,7 +1,7 @@
+/*
 package com.project.bridge.config.security;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -20,3 +20,4 @@ public class SecurityUtil {
         return Long.parseLong(authentication.getName());
     }
 }
+*/

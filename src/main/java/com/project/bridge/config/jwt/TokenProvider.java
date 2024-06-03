@@ -1,5 +1,5 @@
+/*
 package com.project.bridge.config.jwt;
-
 
 import com.project.bridge.dto.auth.TokenDto;
 import io.jsonwebtoken.*;
@@ -7,7 +7,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,8 +25,9 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider {
 
+    //JWT토큰으로 유저정보를 암호화/복호화
     private static final String AUTHORITIES_KEY = "auth";
-    private static final String TOKEN_PREFIX = "Bearer ";
+    private static final String TOKEN_PREFIX = "Bearer";
     private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 1000 * 60 * 60;
     private static final long REFRESH_TOKEN_VALIDITY_SECONDS = 1000 * 60 * 60 * 24 * 7;
 
@@ -38,7 +38,7 @@ public class TokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    //토큰 생성(암호화)
+    //Access Token, Refresh Token 생성(암호화)
     public TokenDto generateTokenDto(Authentication authentication) {
 
         String authorities = authentication.getAuthorities().stream()
@@ -46,8 +46,6 @@ public class TokenProvider {
                 .collect(Collectors.joining(","));
 
         long now = System.currentTimeMillis();
-
-
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_VALIDITY_SECONDS * 1000);
 
         // Access Token
@@ -63,17 +61,18 @@ public class TokenProvider {
                 .setExpiration(new Date(now + REFRESH_TOKEN_VALIDITY_SECONDS))
                 .signWith(key, SignatureAlgorithm.ES256)
                 .compact();
+
         return TokenDto.builder()
                 .grantType(TOKEN_PREFIX)
                 .accessToken(accessToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
                 .refreshToken(refreshToken)
                 .build();
-
     }
 
     //토큰 복호화
     public Authentication getAuthentication(String accessToken) {
+
         Claims claims = parseClaims(accessToken);
         if(claims.get(AUTHORITIES_KEY) == null) {
             throw new RuntimeException("Invalid access token");
@@ -113,3 +112,4 @@ public class TokenProvider {
         }
     }
 }
+*/

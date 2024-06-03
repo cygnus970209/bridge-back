@@ -1,3 +1,4 @@
+/*
 package com.project.bridge.config.security;
 
 import com.project.bridge.config.jwt.JwtAccessDeniedHandler;
@@ -23,16 +24,19 @@ public class SecurityConfig {
 
 
     private final TokenProvider tokenProvider;
-    private final CorsFilter corsFilter;
+    //private final CorsFilter corsFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    @Bean
+    */
+/*@Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+    }*//*
 
-    @Bean
+
+   */
+/* @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         //CSRF 설정 Disable
@@ -52,5 +56,7 @@ public class SecurityConfig {
                 .apply(new JwtSecurityConfig(tokenProvider));
 
         return http.build();
-    }
+    }*//*
+
 }
+*/

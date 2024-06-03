@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
+
 
 @RestController
-@RequestMapping("/v1/user")
+@RequestMapping(value = "/v1/user")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
@@ -32,17 +34,14 @@ public class UserController {
 
     //회원정보 저장
     @PostMapping
-    public ResponseEntity createUser(@RequestBody UserDto.User userDto) {
-
-        boolean result=true;
-
-        return ResponseEntity.ok(result);
+    public ResponseEntity createUser(@RequestBody UserDto.User userDto) throws NoSuchAlgorithmException {
+        return ResponseEntity.ok(userService.save(userDto));
     }
 
 
     //인증메일 발송
-    @PostMapping("/mail-request")
-    public ResponseEntity sendCertificationMail(@RequestParam("email") String email) {
+    @PostMapping(value = "/mail-request")
+    public ResponseEntity sendCertificationMail(@RequestParam(value = "email") String email) {
 
         String auth_idx="";
         return ResponseEntity.ok(auth_idx);
