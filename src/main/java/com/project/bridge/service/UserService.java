@@ -7,4 +7,6 @@ import java.security.NoSuchAlgorithmException;
 
 public interface UserService {
     UserEntity save(UserDto.User userDto) throws NoSuchAlgorithmException;
+
+    boolean existByUserName(String userName);
 }

@@ -37,13 +37,18 @@ public class UserRepositorySupport extends BridgeQueryDslRepositorySupport {
                 .password(userDto.getPassword()).build());
     }
 
-    //이메일 중복확인
-    public boolean existByUserEmail(String email) {
+    //닉네임 중복확인
+    public boolean existsByUserName(String userName) {
         return jpaQueryFactory
                 .selectFrom(userEntity)
-                .where(userEntity.userEmail.eq(email))
+                .where(userEntity.userName.eq(userName))
                 .fetchFirst() != null;
     }
+
+    //인증메일 발송
+
+    //인증번호 검증
+
 
 
 

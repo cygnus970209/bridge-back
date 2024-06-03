@@ -3,7 +3,6 @@ package com.project.bridge.service.Impl;
 import com.project.bridge.config.security.ShaEncoder;
 import com.project.bridge.dto.UserDto;
 import com.project.bridge.entity.UserEntity;
-import com.project.bridge.repositories.UserRepository;
 import com.project.bridge.repositories.support.UserRepositorySupport;
 import com.project.bridge.service.UserService;
 import jakarta.transaction.Transactional;
@@ -29,6 +28,11 @@ public class UserServiceImpl implements UserService {
         String encodePassword = shaEncoder.encrypt(userDto.getPassword());
         userDto.setPassword(encodePassword);
         return userRepositorySupport.save(userDto);
+    }
+
+    @Override
+    public boolean existByUserName(String userName){
+        return userRepositorySupport.existsByUserName(userName);
     }
 
 }
