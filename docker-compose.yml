@@ -5,7 +5,7 @@ services:
     container_name: spring-boot
     restart: always
     ports:
-      - "8080:8080"
+      - "8090:8080"
     depends_on:
       - mariadb
       - redis
@@ -14,7 +14,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=bridge
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-
   mariadb:
     container_name: mariadb
     image: mariadb
@@ -26,15 +25,12 @@ services:
       - "3307:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
-
   redis:
     image: redis
     container_name: redis
     hostname: bridge_redis
     restart: always
     ports:
-      - "6379:6379"
-
-
+      - "6380:6379"
 volumes:
   mariadb_data:

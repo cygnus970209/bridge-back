@@ -49,13 +49,11 @@ dependencies {
 	//jdbc
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
-	//QueryDSL
-	implementation 'javax.annotation:javax.annotation-api:1.3.2'
-	implementation group: 'com.querydsl', name: 'querydsl-core', version: '4.4.0'
-	implementation group: 'com.querydsl', name: 'querydsl-jpa', version: '4.4.0'
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+	// QueryDSL
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
 	//lombok
 	compileOnly 'org.projectlombok:lombok'
