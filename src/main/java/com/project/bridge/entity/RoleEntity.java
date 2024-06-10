@@ -17,6 +17,9 @@ public class RoleEntity {
     @Column(name="idx")
     private Long idx;
 
+    @Column(name = "user_idx")
+    private Long userIdx;
+
     @Column(name="role")
     private String role;
 
