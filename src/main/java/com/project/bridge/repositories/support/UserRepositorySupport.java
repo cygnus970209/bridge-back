@@ -47,14 +47,6 @@ public class UserRepositorySupport extends BridgeQueryDslRepositorySupport {
                 .password(userDto.getPassword()).build());
     }
 
-    //회원가입 시 권한 저장
-    public RoleEntity saveRole(Long userIdx) throws NoSuchAlgorithmException {
-        return roleRepository.save(RoleEntity.builder()
-                        .userIdx(userIdx)
-                        .role("USER")
-                        .build());
-    }
-
     //닉네임 중복확인
     public boolean existsByNickname(String nickname) {
         return jpaQueryFactory
@@ -62,7 +54,6 @@ public class UserRepositorySupport extends BridgeQueryDslRepositorySupport {
                 .where(userEntity.nickname.eq(nickname))
                 .fetchFirst() != null;
     }
-
 
     //이메일 중복 확인
     public UserEntity findByEmail(String email){
@@ -81,5 +72,13 @@ public class UserRepositorySupport extends BridgeQueryDslRepositorySupport {
     }
 
     //인증번호 검증
+
+    //사용자 확인
+    public UserEntity findByUserName(String nickname){
+        return jpaQueryFactory
+                .selectFrom(userEntity)
+                .where(userEntity.nickname.eq(nickname))
+                .fetchFirst();
+    }
 
 }

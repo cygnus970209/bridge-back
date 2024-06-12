@@ -5,6 +5,7 @@ import com.project.bridge.dto.UserDto;
 import com.project.bridge.entity.MailAuthEntity;
 import com.project.bridge.entity.RoleEntity;
 import com.project.bridge.entity.UserEntity;
+import com.project.bridge.repositories.support.RoleRepositorySupport;
 import com.project.bridge.repositories.support.UserRepositorySupport;
 import com.project.bridge.service.MailService;
 import com.project.bridge.service.RedisService;
@@ -38,6 +39,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepositorySupport userRepositorySupport;
 
+    @Autowired
+    private RoleRepositorySupport roleRepositorySupport;
+
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
 
@@ -54,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public RoleEntity saveRole(Long userIdx) throws NoSuchAlgorithmException {
-        return userRepositorySupport.saveRole(userIdx);
+        return roleRepositorySupport.saveRole(userIdx);
     }
 
     @Override

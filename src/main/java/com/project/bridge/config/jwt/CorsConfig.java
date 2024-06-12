@@ -12,7 +12,7 @@ public class CorsConfig {
 
     //다른 Server 환경에서 자원을 공유하기 위한 설정
 
-   /* @Bean
+    @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
@@ -25,5 +25,5 @@ public class CorsConfig {
 
         //에러 발생 가능
         return new CorsFilter((CorsConfigurationSource) source);
-    }*/
+    }
 }

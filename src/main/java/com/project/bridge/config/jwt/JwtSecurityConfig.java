@@ -1,4 +1,4 @@
-/*package com.project.bridge.config.jwt;
+package com.project.bridge.config.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -17,4 +17,4 @@ public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
         http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-}*/
+}

@@ -1,4 +1,3 @@
-/*
 package com.project.bridge.config.jwt;
 
 import jakarta.servlet.ServletException;
@@ -19,4 +18,4 @@ public class JwtAuthenticationEntryPoint implements AccessDeniedHandler {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
-*/
+

@@ -2,6 +2,7 @@ package com.project.bridge.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.mapping.Set;
 
 @Entity
 @Table(name = "MEMBER")
@@ -11,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class UserEntity {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

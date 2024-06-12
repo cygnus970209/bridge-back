@@ -35,6 +35,11 @@ public class UserController {
      *
      */
 
+    @GetMapping("/login")
+    public String mainp(){
+        return "main";
+    }
+
     //회원정보 저장
     @PostMapping
     public ResponseEntity createUser(@RequestBody UserDto.User userDto) throws NoSuchAlgorithmException {
