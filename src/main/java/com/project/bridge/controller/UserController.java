@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -66,5 +67,19 @@ public class UserController {
         memberService.saveMember(saveMemberRequest.getEmail(), saveMemberRequest.getPassword(), saveMemberRequest.getNickname());
 
         return ResponseUtils.ok("유저 생성 성공");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ResponseDto> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+            );
+
+            String token = jwtUtil.generateToken(authentication.getName());
+            return ResponseUtils.ok("로그인 성공", token);
+        } catch (AuthenticationException e) {
+            return ResponseUtils.error("로그인 실패", e.getMessage());
+        }
     }
 }
