@@ -1,0 +1,5 @@
+### 메일 발송
+GET http://localhost:8080/v1/user/mail-request?email=irisrucia97@gmail.com
+
+### 메일 인증
+
