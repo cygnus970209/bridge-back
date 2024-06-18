@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("local")
 class UserControllerTest {
     
     @Autowired
@@ -55,6 +55,8 @@ class UserControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
             .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value(200))
+            .andExpect(jsonPath("$.data.auth_idx").isNumber())
             .andDo(print());
     }
     
@@ -210,6 +212,4 @@ class UserControllerTest {
             .andExpect(jsonPath("$.data.is_duplicated").value(true))
             .andDo(print());
     }
-    
-    
 }

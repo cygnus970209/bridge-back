@@ -2,6 +2,8 @@ package com.project.bridge.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -10,13 +12,16 @@ import lombok.Getter;
 public class UserReqDto {
     
     @Getter
+    @Builder
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class MailAuth {
     
         @NotNull(message = "인증번호를 입력해주세요.")
         private Long authIdx;
         @NotNull(message = "인증번호를 입력해주세요.")
-        private Integer authNo;
+        @Min(value = 6, message = "6자리 인증번호를 입력해주세요.")
+        @Max(value = 6, message = "6자리 인증번호를 입력해주세요.")
+        private String authNo;
     }
     
     @Getter

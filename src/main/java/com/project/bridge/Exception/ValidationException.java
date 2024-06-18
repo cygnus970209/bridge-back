@@ -13,7 +13,7 @@ public class ValidationException extends RuntimeException{
     private Map<String, String> validation = new HashMap<>();
     
     public ValidationException(String message) {
-        super(MESSAGE);
+        super(message);
     }
     
     public ValidationException(String field, String errorMessage) {

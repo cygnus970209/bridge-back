@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity validationException(ValidationException e) {
-        return ResponseEntityUtil.error(4000, e.getValidation(), "잘못된 요청입니다.");
+        return ResponseEntityUtil.error(4000, e.getValidation(), e.getMessage());
     }
     
     @ExceptionHandler(BizException.class)

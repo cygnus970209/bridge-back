@@ -12,4 +12,11 @@ public class UserResDto {
         @JsonProperty("is_duplicated")
         private boolean isDuplicated;
     }
+    
+    @Getter
+    @Builder
+    public static class mailRequestResDto {
+        @JsonProperty("auth_idx")
+        private Long authIdx;
+    }
 }

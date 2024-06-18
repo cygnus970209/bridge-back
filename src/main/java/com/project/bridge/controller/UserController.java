@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/v1/user")
@@ -18,7 +20,8 @@ public class UserController {
     private final UserService userService;
     
     @PostMapping("/mail-request")
-    public ResponseEntity mailRequest(@RequestBody String email) {
+    public ResponseEntity mailRequest(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
         ValidationUtils.validateEmail(email);
         
         return userService.mailRequest(email);

@@ -1,9 +1,8 @@
 package com.project.bridge.utils;
 
 import com.project.bridge.dto.ResponseDto;
+import jakarta.annotation.Nullable;
 import org.springframework.http.ResponseEntity;
-
-import javax.annotation.Nullable;
 
 public class ResponseEntityUtil {
     

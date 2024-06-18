@@ -1,9 +1,12 @@
 package com.project.bridge.service;
 
 import com.project.bridge.Exception.BizException;
+import com.project.bridge.domain.MailAuthEntity;
 import com.project.bridge.domain.UserEntity;
 import com.project.bridge.dto.UserReqDto;
+import com.project.bridge.repository.MailAuthRepository;
 import com.project.bridge.repository.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +27,8 @@ class UserServiceTest {
     
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    MailAuthRepository mailAuthRepository;
     
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
@@ -31,6 +36,7 @@ class UserServiceTest {
     @BeforeEach
     void clean() {
         userRepository.deleteAll();
+        mailAuthRepository.deleteAll();
     }
     
     
@@ -44,10 +50,10 @@ class UserServiceTest {
             .userName("username")
             .nickname("nickname")
             .build();
-    
+        
         // when
         userService.save(req);
-    
+        
         // then
         UserEntity user = userRepository.findAll().get(0);
         
@@ -88,5 +94,30 @@ class UserServiceTest {
         assertEquals(true, passwordEncoder.matches("kangcp", user.getPassword()));
         
     }
-
+    
+    
+    @Test
+    @DisplayName("인증 메일 요청 및 인증")
+    void t3() {
+        userService.mailRequest("lionskang@gmail.com");
+    
+        MailAuthEntity mailAuthEntity = mailAuthRepository.findAll().get(0);
+    
+        Assertions.assertThrows(BizException.class, () -> {
+            userService.mailAuth(UserReqDto.MailAuth.builder()
+                .authIdx(mailAuthEntity.getIdx())
+                .authNo("112233")
+                .build());
+        });
+    
+        Assertions.assertEquals(0, mailAuthRepository.findByIdx(mailAuthEntity.getIdx()).getIsAuth());
+        
+        userService.mailAuth(UserReqDto.MailAuth.builder()
+            .authIdx(mailAuthEntity.getIdx())
+            .authNo(mailAuthEntity.getAuthNo())
+            .build());
+    
+        Assertions.assertEquals(1, mailAuthRepository.findByIdx(mailAuthEntity.getIdx()).getIsAuth());
+    }
+    
 }
