@@ -1,4 +1,4 @@
-package com.project.bridge.config.jwt;
+package com.project.bridge.config.jwt.util;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

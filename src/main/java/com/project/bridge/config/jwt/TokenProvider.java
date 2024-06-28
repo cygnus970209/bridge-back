@@ -1,10 +1,15 @@
 package com.project.bridge.config.jwt;
 
+import com.project.bridge.config.security.CustomUserDetailsService;
+import com.project.bridge.dto.RoleDto;
 import com.project.bridge.dto.auth.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,9 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,17 +30,72 @@ public class TokenProvider {
     //JWT토큰으로 유저정보를 암호화/복호화
     private static final String AUTHORITIES_KEY = "auth";
     private static final String TOKEN_PREFIX = "Bearer";
-    private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 1000 * 60 * 60;
-    private static final long REFRESH_TOKEN_VALIDITY_SECONDS = 1000 * 60 * 60 * 24 * 7;
+    private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 1000 * 60 * 60;       //1시간
+    private static final long REFRESH_TOKEN_VALIDITY_SECONDS = 1000 * 60 * 60 * 24 * 7;     //1주일
 
-    private final Key key;
+    @Value("${jwt.secret}")
+    private String secretKey;
 
-    public TokenProvider(@Value("${jwt.secret}") String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+    private final CustomUserDetailsService customUserDetailsService;
+
+
+    public TokenProvider(@Qualifier("customUserDetailsService") CustomUserDetailsService customUserDetailsService){
+        this.customUserDetailsService = customUserDetailsService;
     }
 
-    //Access Token, Refresh Token 생성(암호화)
+    @PostConstruct
+    protected void init(){
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+    }
+
+    //Jwt 토큰 생성
+    public String createToken(String userIdx, String role){
+        Claims claims = Jwts.claims().setSubject(userIdx);
+        claims.put("role", role);
+        Date now = new Date();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime()+ REFRESH_TOKEN_VALIDITY_SECONDS))   //만료기간
+                .signWith(SignatureAlgorithm.HS512,secretKey)       //암호화 알고리즘
+                .compact();    //token 생성
+    }
+
+
+    public String resolveToken(HttpServletRequest req) {
+        return req.getHeader("X-Auth-Token");
+    }
+
+    public String getUserIdx(String token){
+        return Jwts.parser().setSigningKey(secretKey)
+                .parseClaimsJws(token).getBody().getSubject();
+       /* try{
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+        }catch (ExpiredJwtException e){
+            return e.getClaims();
+        }*/
+    }
+    //토큰 인증 성공 시 SecurityContextHolder에 저장할 Authentication 객체 생성
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(this.getUserIdx(token));
+
+
+       /* Claims claims = parseClaims(token);*/
+       /* if(claims.get(AUTHORITIES_KEY) == null) {
+            throw new RuntimeException("Invalid access token");
+        }*/
+/*
+        Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+
+        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);*/
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+   /* //Access Token, Refresh Token 생성(암호화)
     public TokenDto generateTokenDto(Authentication authentication) {
 
         String authorities = authentication.getAuthorities().stream()
@@ -69,28 +127,13 @@ public class TokenProvider {
                 .build();
     }
 
-    //토큰 복호화
-    public Authentication getAuthentication(String accessToken) {
-
-        Claims claims = parseClaims(accessToken);
-        if(claims.get(AUTHORITIES_KEY) == null) {
-            throw new RuntimeException("Invalid access token");
-        }
-
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
-    }
+   */
 
     //토큰 유효성 검사
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return !claims.getBody().getExpiration().before(new Date());
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
@@ -103,11 +146,4 @@ public class TokenProvider {
         return false;
     }
 
-    private Claims parseClaims(String accessToken) {
-        try{
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
-        }catch (ExpiredJwtException e){
-            return e.getClaims();
-        }
-    }
 }

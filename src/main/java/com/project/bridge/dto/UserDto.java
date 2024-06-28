@@ -2,23 +2,21 @@ package com.project.bridge.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
 @ToString
+@Builder
 public class UserDto {
 
     @Getter
     @Setter
     @ToString
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class User {
-
-        @NotNull
-        private Long idx;
 
         @NotNull(message = "이메일은 필수입니다.")
         @JsonProperty("user_email")

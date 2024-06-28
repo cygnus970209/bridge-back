@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -47,11 +48,14 @@ public class UserServiceImpl implements UserService {
 
     @Value("${spring.mail.username}")
     private String username;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserEntity save(UserDto.User userDto) throws NoSuchAlgorithmException {
         ShaEncoder shaEncoder = new ShaEncoder();
-        String encodePassword = shaEncoder.encrypt(userDto.getPassword());
+        //String encodePassword = shaEncoder.encrypt(userDto.getPassword());
+        String encodePassword = passwordEncoder.encode(userDto.getPassword());
         userDto.setPassword(encodePassword);
         return userRepositorySupport.save(userDto);
     }
