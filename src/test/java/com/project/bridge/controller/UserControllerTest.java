@@ -107,8 +107,8 @@ class UserControllerTest {
     @DisplayName("메일 인증번호 검증_유효성검사")
     void t5() throws Exception {
         // given
-        Map<String, Object> body = new HashMap<>();
-        body.put("auth_no", 1);
+        Map<String, Integer> body = new HashMap<>();
+        body.put("auth_no", 123456);
         
         // expected
         mockMvc.perform(post("/v1/user/mail-auth")

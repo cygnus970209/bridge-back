@@ -3,22 +3,21 @@ spring:
     activate:
       on-profile: test
   datasource:
-    datasource:
-      url: jdbc:h2:mem:bridge
-      username: sa
-      password:
-      driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:bridge
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
   #JPA
   jpa:
     show_sql: true
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
         default_batch_fetch_size: 1000
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.H2Dialect
     database: mysql
   #Redis
   data:
@@ -26,24 +25,25 @@ spring:
       # host: bridge_redis1
       host: localhost
       port: 6379
-
+  #mail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: lionskang@gmail.com
+    password: ampidmfwynprsvjd
+    properties:
+      mail:
+        smtp:
+          connectiontimeout: 5000
+          starttls:
+            enable: true
+          auth: true
+#jwt
+jwt:
+  secret: qpwoeiruty10!)29@(38#*47$&56%^tyrueiwoqp5647382910
 #Server Port
 server:
   port: 8081
-
-#mail
-mail:
-  host: smtp.gmail.com
-  port: 587
-  username: #google계정
-  password: #발급받은 앱 비밀번호
-  properties:
-    mail:
-      smtp:
-        connectiontimeout: 5000
-        starttls:
-          enable: true
-        auth: true
 logging:
   level:
     org:

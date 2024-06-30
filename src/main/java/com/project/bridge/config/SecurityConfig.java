@@ -1,12 +1,14 @@
 package com.project.bridge.config;
 
 import com.project.bridge.filter.CustomAuthenticationFilter;
+import com.project.bridge.filter.JwtAuthenticationFilter;
 import com.project.bridge.security.CustomAuthenticationFailureHandler;
 import com.project.bridge.security.CustomAuthenticationSuccessHandler;
 import com.project.bridge.security.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +17,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -32,6 +36,7 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -41,15 +46,14 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(configurationSource()))
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/v1/user/mail-request", "/v1/user/mail-auth", "/v1/user/dup")
-                .permitAll()
+                .requestMatchers("/v1/user/mail-request", "/v1/user/mail-auth", "/v1/user/dup", "v1/user").permitAll()
                 .anyRequest().authenticated()
             )
-//            .exceptionHandling(config ->
-//                config.authenticationEntryPoint()
-//            )
+            .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
+                httpSecurityExceptionHandlingConfigurer.accessDeniedHandler(accessDeniedHandler())
+                    .authenticationEntryPoint(defaultAuthenticationEntryPoint()))
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterAt(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-//            .addFilterBefore(jwtAuthorizationFilter, BasicAuthenticationFilter.class)
             .build();
         
     }
@@ -84,6 +88,20 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return this.authenticationConfiguration.getAuthenticationManager();
+    }
+    
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return (request, response, accessDeniedException) -> {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        };
+    }
+    
+    @Bean
+    public AuthenticationEntryPoint defaultAuthenticationEntryPoint() {
+        return (request, response, authException) -> {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        };
     }
     
 }

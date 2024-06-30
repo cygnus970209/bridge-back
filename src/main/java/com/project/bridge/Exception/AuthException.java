@@ -6,4 +6,8 @@ public class AuthException extends AuthenticationException {
     public AuthException(String msg) {
         super(msg);
     }
+    
+    public AuthException() {
+        super("unauthorized");
+    }
 }

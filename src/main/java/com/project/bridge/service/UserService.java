@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
     private final MailAuthRepository mailAuthRepository;
@@ -67,7 +67,6 @@ public class UserService {
     
         if (!mailAuth.getAuthNo().equals(request.getAuthNo())) {
             throw new BizException(4000, "올바르지 않은 인증번호입니다.");
-//            throw new ValidationException("authNo", "올바르지 않은 인증번호입니다.");
         }
     
         mailAuth.setIsAuth(1);

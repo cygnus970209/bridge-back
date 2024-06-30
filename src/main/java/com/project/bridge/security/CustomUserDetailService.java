@@ -7,7 +7,6 @@ import com.project.bridge.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,4 +29,18 @@ public class CustomUserDetailService implements UserDetailsService {
             .role(Role.USER)
             .build();
     }
+    public UserDetails loadUserByUsername(Long userIdx) {
+        
+        UserEntity userEntity = userRepository.findById(userIdx).orElseThrow(() -> new AuthException("올바르지 않은 접근입니다.ㄴ"));
+        
+        return UserPrincipal.builder()
+            .userIdx(userEntity.getUserIdx())
+            .email(userEntity.getEmail())
+            .password(userEntity.getPassword())
+            .userName(userEntity.getUserName())
+            .nickname(userEntity.getNickname())
+            .role(Role.USER)
+            .build();
+    }
+    
 }

@@ -48,5 +48,8 @@ public class GlobalExceptionHandler {
         return ResponseEntityUtil.error(e.getCode(), e.getMessage());
     }
     
-    
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity authException(AuthException e) {
+        return ResponseEntityUtil.unauthorized();
+    }
 }
