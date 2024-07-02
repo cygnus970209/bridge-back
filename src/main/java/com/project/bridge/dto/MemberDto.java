@@ -57,4 +57,14 @@ public class MemberDto {
         @NotEmpty(message = "비밀번호 필수값입니다.")
         private String password;
     }
+
+    @Getter
+    @Setter
+    public static class LoginRequest {
+        @NotEmpty(message = "이메일은 필수값입니다.")
+        private String email;
+
+        @NotEmpty(message = "비밀번호는 필수값입니다.")
+        private String password;
+    }
 }

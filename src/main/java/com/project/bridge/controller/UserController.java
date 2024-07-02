@@ -1,8 +1,10 @@
 package com.project.bridge.controller;
 
 import com.google.api.client.util.Maps;
+import com.project.bridge.config.security.JwtTokenProvider;
 import com.project.bridge.dto.MemberDto;
 import com.project.bridge.dto.ResponseDto;
+import com.project.bridge.dto.TokenResponseDto;
 import com.project.bridge.service.MemberService;
 import com.project.bridge.util.ResponseUtils;
 import jakarta.validation.Valid;
@@ -11,7 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -21,6 +26,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     @Qualifier("memberServiceImpl")
@@ -69,17 +77,36 @@ public class UserController {
         return ResponseUtils.ok("유저 생성 성공");
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ResponseDto> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-            );
 
-            String token = jwtUtil.generateToken(authentication.getName());
-            return ResponseUtils.ok("로그인 성공", token);
-        } catch (AuthenticationException e) {
-            return ResponseUtils.error("로그인 실패", e.getMessage());
+    @PostMapping("/login")
+    public ResponseEntity<TokenResponseDto> login(@RequestBody MemberDto.LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Long userId = Long.parseLong(authentication.getName());
+        String accessToken = jwtTokenProvider.createToken(userId, "access");
+        String refreshToken = jwtTokenProvider.createToken(userId, "refresh");
+
+        TokenResponseDto tokenResponse = new TokenResponseDto(accessToken, refreshToken);
+
+        return ResponseEntity.ok(tokenResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponseDto> refresh(@RequestParam String refreshToken) {
+        if (jwtTokenProvider.validateToken(refreshToken)) {
+            Long userId = jwtTokenProvider.getUserId(refreshToken);
+            String newAccessToken = jwtTokenProvider.createToken(userId, "access");
+            String newRefreshToken = jwtTokenProvider.createToken(userId, "refresh");
+
+            TokenResponseDto tokenResponse = new TokenResponseDto(newAccessToken, newRefreshToken);
+
+            return ResponseEntity.ok(tokenResponse);
+        } else {
+            return ResponseEntity.status(401).body(null);
         }
     }
 }
