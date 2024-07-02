@@ -1,5 +1,33 @@
 ### 메일 발송
 GET http://localhost:8080/v1/user/mail-request?email=irisrucia97@gmail.com
 
-### 메일 인증
+### 회원가입
+POST http://localhost:8080/v1/user
+Content-Type: application/json
 
+{
+  "email": "test@test.com",
+  "password": "1234",
+  "nickname": "test"
+}
+
+### 로그인
+POST http://localhost:8080/v1/user/login
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "1234"
+}
+
+### 리프레시
+POST http://localhost:8080/v1/user/refresh
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzM4NCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcxOTkxOTgxNiwiZXhwIjoxNzE5OTIyNDA4fQ.-8b5NGoxTFGFlXpbNUapekFJQpT-l3EXUpKLq_515YrEn-hk8GYTNHZdFeRx4dKK"
+}
+
+### 시큐리티 테스트
+GET http://localhost:8080/v1/test/hello
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwidXNlcklkIjoxLCJpYXQiOjE3MTk5MjA2ODIsImV4cCI6MTcxOTkyMDc2OH0.lZtFNAoOgKw6dw_4kqoIaQOU2-x_9QiAzaD-yhwJPfNAB9cP8oiU-qCNSrT7bp9P

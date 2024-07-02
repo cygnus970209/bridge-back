@@ -21,8 +21,10 @@ services:
     environment:
       - MARIADB_DATABASE=bridge
       - MARIADB_ROOT_PASSWORD=bridge
+      - TZ=Asia/Seoul
+      - MYSQL_ROOT_PASSWORD=bridge
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
   redis:

@@ -27,12 +27,13 @@ public class JwtTokenProvider {
     @Value("${spring.security.jwt.refresh-token-validity}")
     private long refreshTokenValidity;
 
-    public String createToken(Long userId, String type) {
+    public String createToken(Long userId, String userEmail, String type) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + (type.equals("access") ? accessTokenValidity : refreshTokenValidity));
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
+        claims.put("userEmail", userEmail);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -59,5 +60,10 @@ public class JwtTokenProvider {
     public Long getUserId(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
         return claims.get("userId", Long.class);
+    }
+
+    public String getUserEmail(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
+        return claims.get("userEmail", String.class);
     }
 }

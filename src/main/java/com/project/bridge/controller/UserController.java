@@ -88,8 +88,8 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         Long userId = Long.parseLong(authentication.getName());
-        String accessToken = jwtTokenProvider.createToken(userId, "access");
-        String refreshToken = jwtTokenProvider.createToken(userId, "refresh");
+        String accessToken = jwtTokenProvider.createToken(userId, loginRequest.getEmail(), "access");
+        String refreshToken = jwtTokenProvider.createToken(userId, loginRequest.getEmail(), "refresh");
 
         TokenResponseDto tokenResponse = new TokenResponseDto(accessToken, refreshToken);
 
@@ -100,8 +100,9 @@ public class UserController {
     public ResponseEntity<TokenResponseDto> refresh(@RequestBody MemberDto.RefreshRequest refreshToken) {
         if (jwtTokenProvider.validateToken(refreshToken.getToken())) {
             Long userId = jwtTokenProvider.getUserId(refreshToken.getToken());
-            String newAccessToken = jwtTokenProvider.createToken(userId, "access");
-            String newRefreshToken = jwtTokenProvider.createToken(userId, "refresh");
+            String userEmail = jwtTokenProvider.getUserEmail(refreshToken.getToken());
+            String newAccessToken = jwtTokenProvider.createToken(userId, userEmail, "access");
+            String newRefreshToken = jwtTokenProvider.createToken(userId, userEmail, "refresh");
 
             TokenResponseDto tokenResponse = new TokenResponseDto(newAccessToken, newRefreshToken);
 
