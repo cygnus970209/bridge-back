@@ -9,6 +9,7 @@ import com.project.bridge.service.MemberService;
 import com.project.bridge.util.SHA256Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Long sendAuthMail(String email) throws RuntimeException {
@@ -86,7 +90,8 @@ public class MemberServiceImpl implements MemberService {
         // 회원가입
         memberRepository.save(MemberEntity.builder()
                 .email(email)
-                .password(SHA256Utils.getEncrypt(password, "rian123!@#"))
+//                .password(SHA256Utils.getEncrypt(password, "rian123!@#"))
+                .password(passwordEncoder.encode(password))
                 .nickname(nickname)
                 .build());
 

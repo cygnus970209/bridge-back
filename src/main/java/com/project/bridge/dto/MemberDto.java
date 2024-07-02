@@ -1,5 +1,6 @@
 package com.project.bridge.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -49,12 +50,15 @@ public class MemberDto {
     public static class SaveMemberRequest {
         @Email
         @NotEmpty(message = "이메일은 필수값입니다.")
+        @JsonProperty("email")
         private String email;
 
         @NotEmpty(message = "닉네임는 필수값입니다.")
+        @JsonProperty("nickname")
         private String nickname;
 
         @NotEmpty(message = "비밀번호 필수값입니다.")
+        @JsonProperty("password")
         private String password;
     }
 
@@ -66,5 +70,11 @@ public class MemberDto {
 
         @NotEmpty(message = "비밀번호는 필수값입니다.")
         private String password;
+    }
+
+    @Getter
+    @Setter
+    public static class RefreshRequest {
+        private String token;
     }
 }

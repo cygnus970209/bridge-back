@@ -7,6 +7,7 @@ import com.project.bridge.dto.ResponseDto;
 import com.project.bridge.dto.TokenResponseDto;
 import com.project.bridge.service.MemberService;
 import com.project.bridge.util.ResponseUtils;
+import com.project.bridge.util.SHA256Utils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +72,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDto> createUser(@Valid MemberDto.SaveMemberRequest saveMemberRequest) {
+    public ResponseEntity<ResponseDto> createUser(@Valid @RequestBody MemberDto.SaveMemberRequest saveMemberRequest) {
         memberService.saveMember(saveMemberRequest.getEmail(), saveMemberRequest.getPassword(), saveMemberRequest.getNickname());
 
         return ResponseUtils.ok("유저 생성 성공");
@@ -96,9 +97,9 @@ public class UserController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponseDto> refresh(@RequestParam String refreshToken) {
-        if (jwtTokenProvider.validateToken(refreshToken)) {
-            Long userId = jwtTokenProvider.getUserId(refreshToken);
+    public ResponseEntity<TokenResponseDto> refresh(@RequestBody MemberDto.RefreshRequest refreshToken) {
+        if (jwtTokenProvider.validateToken(refreshToken.getToken())) {
+            Long userId = jwtTokenProvider.getUserId(refreshToken.getToken());
             String newAccessToken = jwtTokenProvider.createToken(userId, "access");
             String newRefreshToken = jwtTokenProvider.createToken(userId, "refresh");
 
