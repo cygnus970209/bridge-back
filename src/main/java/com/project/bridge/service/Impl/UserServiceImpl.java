@@ -11,11 +11,12 @@ import com.project.bridge.service.MailService;
 import com.project.bridge.service.RedisService;
 import com.project.bridge.service.UserService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -27,6 +28,7 @@ import java.util.Random;
 @Transactional
 @Slf4j
 @Qualifier("userServiceImpl")
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private static final String AUTH_CODE_PREFIX = "auth_code_";
@@ -48,14 +50,14 @@ public class UserServiceImpl implements UserService {
 
     @Value("${spring.mail.username}")
     private String username;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public UserEntity save(UserDto.User userDto) throws NoSuchAlgorithmException {
         ShaEncoder shaEncoder = new ShaEncoder();
         //String encodePassword = shaEncoder.encrypt(userDto.getPassword());
-        String encodePassword = passwordEncoder.encode(userDto.getPassword());
+        String encodePassword = bCryptPasswordEncoder.encode(userDto.getPassword());
         userDto.setPassword(encodePassword);
         return userRepositorySupport.save(userDto);
     }

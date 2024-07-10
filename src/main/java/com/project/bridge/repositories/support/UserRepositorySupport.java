@@ -1,14 +1,10 @@
 package com.project.bridge.repositories.support;
 
 import com.project.bridge.config.querydsl.BridgeQueryDslRepositorySupport;
-import com.project.bridge.config.security.ShaEncoder;
-import com.project.bridge.dto.RoleDto;
 import com.project.bridge.dto.UserDto;
 import com.project.bridge.entity.MailAuthEntity;
-import com.project.bridge.entity.RoleEntity;
 import com.project.bridge.entity.UserEntity;
 import com.project.bridge.repositories.MailRepository;
-import com.project.bridge.repositories.RoleRepository;
 import com.project.bridge.repositories.UserRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +20,6 @@ import static com.project.bridge.entity.QUserEntity.userEntity;
 public class UserRepositorySupport extends BridgeQueryDslRepositorySupport {
 
     private final JPAQueryFactory jpaQueryFactory;
-
-    @Autowired
-    private RoleRepository roleRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -69,16 +62,6 @@ public class UserRepositorySupport extends BridgeQueryDslRepositorySupport {
                         .code(code)
                         .email(email)
                         .build());
-    }
-
-    //인증번호 검증
-
-    //사용자 확인
-    public UserEntity findByUserName(String nickname){
-        return jpaQueryFactory
-                .selectFrom(userEntity)
-                .where(userEntity.nickname.eq(nickname))
-                .fetchFirst();
     }
 
 }

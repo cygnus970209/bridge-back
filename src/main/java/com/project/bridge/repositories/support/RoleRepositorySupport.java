@@ -2,7 +2,6 @@ package com.project.bridge.repositories.support;
 
 import com.project.bridge.config.querydsl.BridgeQueryDslRepositorySupport;
 import com.project.bridge.entity.RoleEntity;
-import com.project.bridge.entity.UserEntity;
 import com.project.bridge.repositories.RoleRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,7 @@ public class RoleRepositorySupport extends BridgeQueryDslRepositorySupport {
     public RoleEntity saveRole(Long userIdx) throws NoSuchAlgorithmException {
         return roleRepository.save(RoleEntity.builder()
                 .userIdx(userIdx)
-                .role("USER")
+                .role("ROLE_USER")
                 .build());
     }
 

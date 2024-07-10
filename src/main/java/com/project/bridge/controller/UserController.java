@@ -1,6 +1,5 @@
 package com.project.bridge.controller;
 
-import com.project.bridge.config.jwt.TokenProvider;
 import com.project.bridge.dto.UserDto;
 import com.project.bridge.dto.resp.ResponseDto;
 import com.project.bridge.entity.UserEntity;
@@ -9,16 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -33,16 +23,7 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    @Qualifier("userServiceImpl")
     private UserService userService;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private TokenProvider tokenProvider;
-    @Autowired
-    private AuthenticationManagerBuilder authenticationManagerBuilder;
 
     /**
      * HTTP STATUS CODE => Always 200(OK)
@@ -50,24 +31,6 @@ public class UserController {
      * "msg" : "내용",                //프론트에서 바로 사용할 수 있는 메세지 형태로..
      * "data" : Map<String, Object>
      */
-
-    @GetMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid UserDto.User userDto){
-        try{
-
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getUserEmail(), userDto.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            String token = tokenProvider.createToken(authentication.getName(), "USER");
-
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add("Authorization", "Bearer " + token);
-            return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(token);
-        }catch (AuthenticationException e){
-            log.info("error== {}", e.getMessage());
-            return ResponseEntity.badRequest().build();
-        }
-    }
 
     //회원정보 저장
     @PostMapping
@@ -157,6 +120,5 @@ public class UserController {
                         .build()
         );
     }
-
 
 }
